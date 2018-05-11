@@ -24,6 +24,7 @@ strat.init = function() {
 // What happens on every new candle?
 strat.update = function(candle) {
 
+    
     //   open the database
     let db = new sqlite3.Database('../BitcoinForecast/data.db', sqlite3.OPEN_READ, (err) => {
       if (err) {
@@ -33,35 +34,39 @@ strat.update = function(candle) {
     });
  
     db.serialize(() => {
-      var p_row;
-      db.each(`SELECT * from predict order by rowid desc limit 2`, (err, row) => {
+      var 
+        lrow;
+        now = new Date().toISOString()
+      db.each(`SELECT rowid,* from predict order by rowid desc limit 2`, (err, row) => {
         if (err) {
           console.error("error found", err.message);
         }
         else
         {
-           if (p_row){
-              if(p_row.slope < -20 && p_row.slope < row.slope) // up we go we buy
+           if (lrow){
+              if(row.slope < -10 && lrow.slope > row.slope) // up we go we buy
               {
                   this.currentTrend = "long";
                   this.toUpdate = true;
-                  console.log("Update: Advise is to long")
+                  console.log(now," UPDATE: Update: Advise is to long")
               }
-              else if(p_row.slope > 20 && p_row.slope > row.slope) //down we go we sell
+              else if(row.slope > 15 && lrow.slope < row.slope) //down we go we sell
               {
                   this.currentTrend = "short";
                   this.toUpdate = true;
-                  console.log("Update: Advise is to short")
+                  console.log(now," UPDATE: Advise is to short")
               }
               else
                 this.toUpdate = null;
 
+           console.log(row);
+           console.log(lrow);
            }
            else
-              p_row = row;
+              lrow = row;
         }
         
-        console.log(row);
+        
       });
     });
  
@@ -87,21 +92,20 @@ strat.log = function() {
 strat.check = function() {
 
   // Only continue if we have a new update.
+  console.log("Checking in at: ",new Date().toISOString());
   if(!this.toUpdate)
     return;
 
   if(this.currentTrend === 'long') {
 
-    // If it was long, set it to short
-    this.currentTrend = 'short';
-    this.advice('short');
+    this.advice('long');
+    console.log("advice set to long")
 
   } else {
 
-    // If it was short, set it to long
-    this.currentTrend = 'long';
-    this.advice('long');
 
+    this.advice('short');
+    console.log("advice set to short")
   }
 }
 
