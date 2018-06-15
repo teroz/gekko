@@ -26,7 +26,7 @@ strat.update = function(candle) {
 
     
     //   open the database
-    let db = new sqlite3.Database('../BitcoinForecast/data.db', sqlite3.OPEN_READ, (err) => {
+    let db = new sqlite3.Database('/var/tmp/data.db', sqlite3.OPEN_READ, (err) => {
       if (err) {
         console.error("db error :",err.message);
       }
