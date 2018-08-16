@@ -44,17 +44,19 @@ strat.update = function(candle) {
         else
         {
            if (lrow){
-              if(row.slope < -20 && lrow.slope > row.slope && row.target > row.actual) // its going to swing up so we buy
+              if(row.slope < -20 && lrow.slope > row.slope)// && row.target > row.actual) // its going to swing up so we buy
               {
                   this.currentTrend = "long";
                   this.toUpdate = true;
-                  console.log(now," UPDATE: Update: Advise is to long")
+                  console.log(now," UPDATE: Update: Advise is to long");
+                  console.log(row);
               }
-              else if(row.slope > 20 && lrow.slope < row.slope && row.target < row.actual) //down we go so we sell
+              else if(row.slope > 20 && lrow.slope < row.slope)// && row.target < row.actual) //down we go so we sell
               {
                   this.currentTrend = "short";
                   this.toUpdate = true;
                   console.log(now," UPDATE: Advise is to short")
+                  console.log(row);
               }
               else
                 this.toUpdate = null;
